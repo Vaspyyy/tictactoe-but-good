@@ -1,9 +1,43 @@
 #include <stdio.h>
 #include <string.h>
-#define PLAYER1 0
-#define PLAYER2 1
+#include <time.h>
+#include <unistd.h>
 
-#include <stdlib.h>
+char *catFrames[] =  {
+  "\033[3A\033[K  A_A \n>('w')<\n (j l)j\n",  // first
+  "\033[3A\033[K  A_A \n>(-w-)<\n (j l)j\n",  // blink
+  "\033[3A\033[K  A_A \n>('w')<\n (j l)j\n",  // tail 1
+  "\033[3A\033[K  A_A \n>('w')<\n (j l)/\n",  // tail 2
+  "\033[3A\033[K  A_A \n>('w')<\n (j l)-\n",  // tail 3
+  "\033[3A\033[K  A_A \n>('w')<\n (j l)/\n",  // tail 4
+  "\033[3A\033[K  A_A \n>('w')<\n (j l)j\n",  // tail 5
+  "\033[3A\033[K  A_A .\n>(-w-)<\n (j l)j\n",  // meow 1
+  "\033[3A\033[K  A_A .<\n>(-v-)<\n (j l)j\n",  // meow 2
+  "\033[3A\033[K  A_A .<meow!>\n>('O')<\n (j l)j\n",  // meow 3
+  "\033[3A\033[K  A_A .<meow!>\n>('o')<\n (j l)j\n",  // meow 4
+  "\033[3A\033[K  A_A .\n>('w')<\n (j l)j\n",  // meow 5
+};
+
+void sleep_float(float seconds) {
+    struct timespec ts;
+    ts.tv_sec = (time_t)seconds;
+    ts.tv_nsec = (long)((seconds - ts.tv_sec) * 1e9); // convert decimal to nanoseconds
+    nanosleep(&ts, NULL);
+}
+
+// print cat gif
+void printCat () {
+    // get the amount of frames
+    int count = 0;
+    while (catFrames[count] != NULL) {
+        count++;
+    }
+
+    for (int i = 0; i < count; i++) {
+        printf("%s", catFrames[i]);
+        sleep_float(0.356);
+    }
+}
 
 // all the slots, edited by user
 char slots[9] = "123456789";
@@ -141,10 +175,16 @@ int main () {
     // check for incase two winning combinations
     // are made. we really dont know why it didnt
     // work in the for loop...
+    // cat is only here cus easter egg >:3
+    // ... sorry player 2!
     if (checkWin(prevPlr)) {
         printf("\033[B");
         printGrid();
         printf("\033[2K\033[33mPlayer %d has won!\033[0m\033[K\n\n", prevPlr);
+        // print cat
+        puts("\n\n");
+        printCat();
+        puts("\33[2K\r"); // clear weird err msg that appears
         return prevPlr;
     }
 
