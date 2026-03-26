@@ -18,13 +18,27 @@ int board[9] = {0};
 
 int usedCells[9] = {0};
 
+// contains the colors for the
+// edited slots
+char slotColors[9][9] = {
+    "", "", "",
+    "", "", "",
+    "", "", "",
+};
+
+// the colors used to edit slotColors
+char playerColors[2][9] = {
+    "\033[31m", // player 1
+    "\033[34m" // player 2
+};
+
 // print grid
 void printGrid() {
-    printf("\033[8A%s\n%c | %c | %c\n─────────\n%c | %c | %c\n─────────\n%c | %c | %c\n\n",
+    printf("\033[8A%s\n%s%c \033[0m| %s%c \033[0m| %s%c\n\033[0m─────────\n%s%c \033[0m| %s%c \033[0m| %s%c\n\033[0m─────────\n%s%c \033[0m| %s%c \033[0m| %s%c\033[0m\n\n",
     errorStr,
-    slots[6], slots[7], slots[8],
-    slots[3], slots[4], slots[5],
-    slots[0], slots[1], slots[2]);
+    slotColors[6], slots[6], slotColors[7], slots[7], slotColors[8], slots[8],
+    slotColors[3], slots[3], slotColors[4], slots[4], slotColors[5], slots[5],
+    slotColors[0], slots[0], slotColors[1], slots[1], slotColors[2], slots[2]);
 }
 
 int main () {
@@ -53,6 +67,7 @@ int main () {
             if (board[winCombinations[w][0]] == 1 &&
                 board[winCombinations[w][1]] == 1 &&
                 board[winCombinations[w][2]] == 1) {
+                printGrid();
                 printf("\033[2K\033[33mPlayer 1 has won!\033[0m\n\n");
                 return 1;
             }
@@ -63,6 +78,7 @@ int main () {
             if (board[winCombinations[w][0]] == 2 &&
                 board[winCombinations[w][1]] == 2 &&
                 board[winCombinations[w][2]] == 2) {
+                printGrid();
                 printf("\033[2K\033[33mPlayer 2 has won!\033[0m\n\n");
                 return 2;
             }
@@ -88,6 +104,7 @@ int main () {
             if ((input - '0') == j) {
                 slots[j - 1] = playerChars[currentPlr - 1];
                 board[j - 1] = currentPlr;
+                strcpy(slotColors[j - 1], playerColors[currentPlr - 1]);
                 usedCells[j - 1] = 1;
 
                 validity = 1;
