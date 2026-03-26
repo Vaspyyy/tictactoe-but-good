@@ -3,6 +3,8 @@
 #define PLAYER1 0
 #define PLAYER2 1
 
+#include <stdlib.h>
+
 // all the slots, edited by user
 char slots[9] = "123456789";
 
@@ -77,8 +79,8 @@ int main () {
         if (checkWin(prevPlr)) {
             printf("\033[B");
             printGrid();
-            printf("\033[2K\033[33mPlayer 2 has won!\033[0m\n\n");
-            return 2;
+            printf("\033[2K\033[33mPlayer %d has won!\033[0m\n\n", prevPlr);
+            return prevPlr;
         }
 
         // the question
@@ -136,9 +138,19 @@ int main () {
         strcpy(errorStr, "\033[K");
     }
 
+    // check for incase two winning combinations
+    // are made. we really dont know why it didnt
+    // work in the for loop...
+    if (checkWin(prevPlr)) {
+        printf("\033[B");
+        printGrid();
+        printf("\033[2K\033[33mPlayer %d has won!\033[0m\033[K\n\n", prevPlr);
+        return prevPlr;
+    }
+
     // print final result
     printf("\033[B");
     printGrid();
-    printf("\n\n\033[34mNobody won, what a bummer!\n\n\033[0m");
+    printf("\033[34mNobody won, what a bummer!\033[K\n\n\033[0m");
     return 0;
 }
