@@ -66,22 +66,24 @@ int main () {
     // current player, always at
     // player 1 by default
     int currentPlr = 1;
+    int prevPlr = 2;
 
     char input;
 
     for (int i = 0; i < 9; i++) {
         printGrid();
 
-        // if player1 won
+        /* if player1 won
         if (checkWin(1)) {
             printf("\033[B");
             printGrid();
             printf("\033[2K\033[33mPlayer 1 has won!\033[0m\n\n");
             return 1;
         }
+        */
 
         // if player2 won
-        if (checkWin(2)) {
+        if (checkWin(prevPlr)) {
             printf("\033[B");
             printGrid();
             printf("\033[2K\033[33mPlayer 2 has won!\033[0m\n\n");
@@ -131,9 +133,11 @@ int main () {
         switch (currentPlr) {
             case 1:
             currentPlr = 2;
+            prevPlr = 1;
             break;
             case 2:
             currentPlr = 1;
+            prevPlr = 2;
             break;
         }
 
