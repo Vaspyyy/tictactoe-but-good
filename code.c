@@ -67,7 +67,6 @@ int main () {
             if (board[winCombinations[w][0]] == 1 &&
                 board[winCombinations[w][1]] == 1 &&
                 board[winCombinations[w][2]] == 1) {
-                printGrid();
                 printf("\033[2K\033[33mPlayer 1 has won!\033[0m\n\n");
                 return 1;
             }
@@ -78,7 +77,6 @@ int main () {
             if (board[winCombinations[w][0]] == 2 &&
                 board[winCombinations[w][1]] == 2 &&
                 board[winCombinations[w][2]] == 2) {
-                printGrid();
                 printf("\033[2K\033[33mPlayer 2 has won!\033[0m\n\n");
                 return 2;
             }
