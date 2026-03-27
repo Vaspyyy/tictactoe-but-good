@@ -2,6 +2,10 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+#include <stdlib.h>
+
+// space to open for grid
+#define GRIDSPACE "\n\n\n\n\n\n\n"
 
 char *catFrames[] =  {
   "\033[3A\033[K  A_A \n>('w')<\n (j l)j\n",  // first
@@ -16,6 +20,7 @@ char *catFrames[] =  {
   "\033[3A\033[K  A_A .<meow!>\n>('O')<\n (j l)j\n",  // meow 3
   "\033[3A\033[K  A_A .<meow!>\n>('o')<\n (j l)j\n",  // meow 4
   "\033[3A\033[K  A_A .\n>('w')<\n (j l)j\n",  // meow 5
+  NULL
 };
 
 void sleep_float(float seconds) {
@@ -24,6 +29,12 @@ void sleep_float(float seconds) {
     ts.tv_nsec = (long)((seconds - ts.tv_sec) * 1e9); // convert decimal to nanoseconds
     nanosleep(&ts, NULL);
 }
+
+// pick wether cat is there or not
+int catToggle = 0;
+// extra newlines added incase
+// kitty exists
+char *kittyNewLines = "";
 
 // print cat gif
 void printCat () {
@@ -277,10 +288,11 @@ int playGame() {
 
 // show start menu, sets gameMode
 void showMenu() {
-    printf("=== Tic Tac Toe ===\n\n");
-    printf("1. Local multiplayer\n");
-    printf("2. vs AI\n\n");
-    printf("Pick a mode: ");
+    fputs("=== C TicTacToe! ===\n\n"
+        "1. Local multiplayer\n"
+        "2. vs AI\n\n"
+        "Pick a mode: "
+        , stdout);
 
     char input;
     while (1) {
@@ -294,12 +306,38 @@ void showMenu() {
     }
 }
 
-int main () {
+// help msg
+void helpUsr() {
+    fputs("\033[34mThis is free software hosted under https://github.com/usr-undeleted/tictactoe and license under the GPL-3 license.\n"
+    "\033[0mUsage: tictactoe [OPTIONS]\n"
+    "The program will guide you with a menu.\n\nOptions:\n"
+    "    help: Show this message.\n"
+    "    cat: Enables kitty animation when someone wins.\n",
+    stdout);
+    exit(0);
+}
+
+int main (int argc, char *argv[]) {
+
+    // get args used
+    for (int i = 1; i < argc; i++) {
+        // help
+        if (!strcmp(argv[i], "help")) {
+            helpUsr();
+            return 0;
+        } else if (!strcmp(argv[i], "cat")) {
+            catToggle = 1;
+        } else { // invalid arg
+            fprintf(stderr, "\033[31mError! Make sure to input a valid argument.\n Use 'tictactoe help' for command usage.\n\033[0m");
+            return 10;
+        }
+    }
+
     showMenu();
 
     // so that printing a new grid doesnt eat up your prompt
     // the solution of doom #1
-    puts("\n\n\n\n\n\n\n");
+    puts(GRIDSPACE);
 
     char rematch;
     do {
@@ -307,13 +345,20 @@ int main () {
 
         int winner = playGame();
 
-        // cat is only here cus easter egg >:3
-        // ... sorry player 2!
         if (winner != 0) {
             scores[winner - 1]++;
             puts("\n\n");
-            printCat();
+
+            if (catToggle) {
+                printCat();
+            }
+
             puts("\33[2K\r"); // clear weird err msg that appears
+
+            // proper spacing for cat
+            if (!catToggle) {
+                puts("\033[5A");
+            }
         }
 
         // show current scores
@@ -328,7 +373,7 @@ int main () {
         while (getchar() != '\n' && getchar() != EOF);
 
         if (rematch == 'y' || rematch == 'Y') {
-            puts("\n\n\n\n\n\n\n");
+            puts(GRIDSPACE);
         }
     } while (rematch == 'y' || rematch == 'Y');
 
