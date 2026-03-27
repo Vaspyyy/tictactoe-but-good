@@ -216,9 +216,9 @@ int playGame() {
         } else {
             // the question
             printf("Player %d, please, pick a valid grid:\033[1C \033[K\033[1D", currentPlr);
-            // the solution of doom #2
-            scanf(" %c%*", &input);
-            while (getchar() != '\n' && getchar() != EOF);
+            char buf[16];
+            if (!fgets(buf, sizeof(buf), stdin)) continue;
+            input = buf[0];
 
             // check input and use it
             int j;
@@ -296,8 +296,9 @@ void showMenu() {
 
     char input;
     while (1) {
-        scanf(" %c", &input);
-        while (getchar() != '\n' && getchar() != EOF);
+        char buf[16];
+        if (!fgets(buf, sizeof(buf), stdin)) continue;
+        input = buf[0];
         if (input == '1' || input == '2') {
             gameMode = input - '0';
             break;
